@@ -1,5 +1,6 @@
 package algorithem.hashlearn;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -162,7 +163,7 @@ public class HashMethod {
     }
 
     /**
-     * 判断一个数是不是快乐数，即，每一次将该数替换为它每个位置上的数字的平方和，
+     * 6.判断一个数是不是快乐数，即，每一次将该数替换为它每个位置上的数字的平方和，
      * 重复着过程知道变为1，也可能数无限循环，如果变为1，那么这个数就是快乐数。
      * @param n
      * @return
@@ -181,7 +182,7 @@ public class HashMethod {
         }
         return true;
     }
-    public int powerSum(int n){
+    private int powerSum(int n){
         int temp = 0;
         int low = 0;
         while (n!=0){
@@ -190,6 +191,177 @@ public class HashMethod {
             n = n/10;
         }
        return temp;
-
     }
+
+    /**
+     * 7.计算数组中两数只和等于target的元素索引。每个元素只能使用一次
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] nums,int target){
+        Map<Integer,Integer> map = new HashMap<>();
+        for (int i=0;i<nums.length;i++){
+            if (map.containsKey(target- nums[i])){
+                return new int[]{map.get(target-nums[i]),i};
+            }
+            map.put(nums[i],i);
+        }
+        return null;
+    }
+
+    /**
+     * 8.计算四个数和为0的元组个数
+     * 给定四个包含整数的数组列表 A , B , C , D ,计算有多少个元组 (i, j, k, l) ，使得 A[i] + B[j] + C[k] + D[l] = 0
+     * 为了使问题简单化，所有的 A, B, C, D 具有相同的长度 N，且 0 ≤ N ≤ 500 。所有整数的范围在 -2^28 到 2^28 - 1 之间，最终结果不会超过 2^31 - 1 。
+     * @param A
+     * @param B
+     * @param C
+     * @param D
+     * @return
+     */
+    public int forSumCount(int[] A,int[] B,int[] C,int[] D){
+        int count = 0;
+        int temp = 0;
+        Map<Integer,Integer> map = new HashMap<>();
+        //首先计算AB两个数组中的元素和，保存在map中
+        for (int i=0;i<A.length;i++){
+            for (int b:B){
+                temp = b+A[i];
+                map.put(temp,map.getOrDefault(temp,0)+1);
+            }
+        }
+
+        //统计剩余的两个元素的和，在map中找是否存在相加为0的情况，同时记录次数
+
+        for (int c:C){
+            for (int d:D){
+                temp = c+d;
+                count = map.getOrDefault(0-temp,0);
+            }
+        }
+        return count;
+    }
+
+    /**
+     * 9.赎金信，杂志中每个字符只能使用一次.这里直接使用数组效率更高
+     * 给定一个赎金信 (ransom) 字符串和一个杂志(magazine)字符串，
+     * 判断第一个字符串 ransom 能不能由第二个字符串 magazines 里面的字符构成。如果可以构成，返回 true ；否则返回 false。
+     * @param ransomNote
+     * @param magazine
+     * @return
+     */
+    public boolean canConstruct(String ransomNote,String magazine){
+       Map<Object,Integer> mapran =   ransomNote.chars().mapToObj(c->(char)c).collect(Collectors.toMap(c->c,c->1,Integer::sum));
+       Map<Object,Integer> mapmag =   magazine.chars().mapToObj(c->(char)c).collect(Collectors.toMap(c->c,c->1,Integer::sum));
+       boolean result = mapran.entrySet().stream().allMatch(entry -> mapmag.containsKey(entry.getKey()) && (mapmag.get(entry.getKey()) >=entry.getValue()));
+       return result;
+    }
+
+    /**
+     * 10.使用数组实现赎金信
+     * @param ransomNote
+     * @param magazine
+     * @return
+     */
+    public boolean canConstructBylist(String ransomNote,String magazine){
+        if (ransomNote.length()>magazine.length()){//个数不够，直接false
+            return false;
+        }
+        int[] record = new int[26];//定义存放字母的数组
+        for (char a:magazine.toCharArray()){
+            record[a-'a'] += 1;
+        }
+        for (char b:ransomNote.toCharArray()){
+            record[b-'a']-=1;
+        }
+        // 如果数组中存在负数，说明ransomNote字符串总存在magazine中没有的字符
+        for(int i : record){
+            if(i < 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 11.三数之和
+     * 哈希法,会超时
+     * 给你一个包含 n 个整数的数组 nums，判断 nums 中是否存在三个元素 a，b，c ，使得 a + b + c = 0 ？请你找出所有满足条件且不重复的三元组。
+     *
+     * 注意： 答案中不可以包含重复的三元组。
+     * 时间复杂度: O(n^2)
+     * 空间复杂度: O(n)，额外的 set 开销
+     * @param list
+     * @return
+     */
+    public List<List<Integer>> threeSum(int[] list){
+//        set中存放nums元素，temp存放两个数的和
+        Set<List<Integer>> result = new HashSet<>();
+        int temp = 0;//保存+b
+        Set<Integer> set = new HashSet<>();
+        for (int i=0;i<list.length;i++){
+            for (int j=i+1;j<list.length;j++){
+                temp = list[i]+list[j];
+                if (set.contains(0-temp)){
+                    result.add(Arrays.asList(list[i],0-temp,list[j]).stream().sorted().collect(Collectors.toList()));
+                }else {
+                    set.add(list[j]);
+                }
+            }
+            set.clear();
+        }
+        return new ArrayList<>(result);
+    }
+
+    /**
+     * 12.三数之和
+     * 使用双指针法，注意去重方法
+     * 首先对数组排序
+     * 依然还是在数组中找到 abc 使得a + b +c =0，我们这里相当于 a = nums[i]，b = nums[left]，c = nums[right]。
+     * 如果 nums[i] + nums[left] + nums[right] < 0 说明 此时 三数之和小了，left 就向右移动，才能让三数之和大一些，直到left与right相遇为止。
+     * 时间复杂度：O(n^2)。
+     * @param nums
+     * @return
+     */
+    public List<List<Integer>> threeSumByDoublePoint(int[] nums){
+        List<List<Integer>> result = new ArrayList<>();
+        Arrays.sort(nums);
+        // 找出a + b + c = 0
+        // a = nums[i], b = nums[left], c = nums[right]
+        for (int i = 0; i < nums.length; i++) {
+            // 排序之后如果第一个元素已经大于零，那么无论如何组合都不可能凑成三元组，直接返回结果就可以了
+            if (nums[i] > 0) {
+                return result;
+            }
+
+            if (i > 0 && nums[i] == nums[i - 1]) {  // 去重a
+                continue;
+            }
+
+            int left = i + 1;
+            int right = nums.length - 1;
+            while (right > left) {
+                int sum = nums[i] + nums[left] + nums[right];
+                if (sum > 0) {
+                    right--;
+                } else if (sum < 0) {
+                    left++;
+                } else {
+                    //找到了三元组
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    // 去重逻辑应该放在找到一个三元组之后，对b 和 c去重
+                    while (right > left && nums[right] == nums[right - 1]) right--;
+                    while (right > left && nums[left] == nums[left + 1]) left++;
+
+                    right--;
+                    left++;
+                }
+            }
+        }
+        return result;
+    }
+
+
+
 }
