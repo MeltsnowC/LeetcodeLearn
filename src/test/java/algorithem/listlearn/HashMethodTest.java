@@ -1,12 +1,16 @@
 package algorithem.listlearn;
 
 import algorithem.hashlearn.HashMethod;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Slf4j
 public class HashMethodTest {
+    Logger logger = LoggerFactory.getLogger(HashMethodTest.class);
     @Test
     public void test(){
         String s = "anagram";
@@ -21,6 +25,7 @@ public class HashMethodTest {
         HashMethod hashMethod = new HashMethod();
         boolean re = hashMethod.isAnagram(s, t);
         List<Integer> anagram = hashMethod.findAnagram(s3, t3);
+        log.info("hello i am log slf4j");
         System.out.printf("寻找异位词:\n子串size:"+anagram.size()+"\n字串索引："+ anagram.toString());
         System.out.println(s+"和"+t+"是否为异位词："+re);
 
