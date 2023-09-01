@@ -274,5 +274,62 @@ public class LeverOrder {
         return root;
     }
 
+    /**
+     * 9.二叉树的最大深度
+     * 使用层序遍历，层序遍历的层数就是二叉树的最大深度
+     * @param root
+     * @return
+     */
+    public int maxDepth(MyTreeNode root) {
+        int result = 0;//记录层数，作为返回值
+        if (root== null){
+            return result;
+        }
+        Deque<MyTreeNode> deque = new LinkedList<>();
+        deque.offerLast(root);
+        while (!deque.isEmpty()){
+            int size = deque.size();
+            for (int i=0;i<size;i++){
+                MyTreeNode node = deque.pollFirst();
+                if (node.left!=null) deque.offerLast(node.left);
+                if (node.right!=null) deque.offerLast(node.right);
+            }
+            result++;
+        }
+        return  result;
 
-}
+    }
+
+    /**
+     * 10.二叉树的最小深度
+     * @param root
+     * @return
+     */
+    public int minDepth(MyTreeNode root) {
+        int result = 0;
+        if (root==null) return result;
+        Deque<MyTreeNode> deque = new LinkedList<>();
+        deque.offerLast(root);
+        while (!deque.isEmpty()){
+            int size = deque.size();
+            result++;
+            for (int i=0;i<size;i++){
+                MyTreeNode node = deque.pollFirst();
+                if ((node.right==null) && (node.left==null)){
+                    return result;
+                }
+                if (node.left!=null){
+                    deque.offerLast(node.left);
+                }
+                if (node.right!=null){
+                    deque.offerLast(node.right);
+                }
+            }
+
+        }
+        return result;
+    }
+
+
+
+    }

@@ -15,4 +15,7 @@ public class StringMethoedTest {
         log.info(result);
 
     }
+
+
+
 }
