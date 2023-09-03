@@ -330,6 +330,57 @@ public class LeverOrder {
         return result;
     }
 
-
-
+    /**
+     * 11.层序遍历完成子树翻转
+     * @param root
+     * @return
+     */
+    public MyTreeNode invertTreeByDieDai(MyTreeNode root){
+        if (root==null) return root;
+        Deque<MyTreeNode> deque = new LinkedList<>();
+        deque.offerLast(root);
+        while (!deque.isEmpty()){
+            MyTreeNode node = deque.pollFirst();
+            swapChildren(node);
+            if (node.left!=null) deque.offerLast(node.left);
+            if (node.right!=null) deque.offerLast(node.right);
+        }
+        return root;
     }
+    /**
+     * 翻转节点
+     * @param root
+     */
+    private void swapChildren(MyTreeNode root) {
+        MyTreeNode tmp = root.left;
+        root.left = root.right;
+        root.right = tmp;
+    }
+
+    /**
+     * 12.层序遍历迭代方法计算节点个数
+     * @param root
+     * @return
+     */
+    public int countTreeNodesByDieDai(MyTreeNode root){
+        int result = 0;
+        if (root==null) return result;
+        Deque<MyTreeNode> deque = new LinkedList<>();
+        deque.offerLast(root);
+        while (!deque.isEmpty()){
+            MyTreeNode node = deque.pollFirst();
+            result++;
+            if (node.left!=null){
+                deque.offerLast(node.left);
+            }
+            if (node.right!=null){
+                deque.offerLast(node.right);
+            }
+        }
+        return result;
+    }
+
+
+
+
+}
