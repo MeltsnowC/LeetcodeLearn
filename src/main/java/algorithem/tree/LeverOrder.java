@@ -368,14 +368,18 @@ public class LeverOrder {
         Deque<MyTreeNode> deque = new LinkedList<>();
         deque.offerLast(root);
         while (!deque.isEmpty()){
-            MyTreeNode node = deque.pollFirst();
-            result++;
-            if (node.left!=null){
-                deque.offerLast(node.left);
+            int size = deque.size();
+            for (int i = 0;i<size;i++){
+                MyTreeNode node = deque.pollFirst();
+                result++;
+                if (node.left!=null){
+                    deque.offerLast(node.left);
+                }
+                if (node.right!=null){
+                    deque.offerLast(node.right);
+                }
             }
-            if (node.right!=null){
-                deque.offerLast(node.right);
-            }
+
         }
         return result;
     }

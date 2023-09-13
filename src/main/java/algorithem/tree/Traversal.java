@@ -565,21 +565,117 @@ public class Traversal {
         //递归终止条件：1.根据左右子树深度是否相同判断是否是一个满二叉树
         //             2.如果是满二叉树，则根据数学公式计算节点个数，否则继续递归
         if (root==null) return 0;
+        MyTreeNode left = root.left;
+        MyTreeNode right = root.right;
         int leftDepth=0,rightDepth=0;//统计左右子树深度，方便公式计算
-        while (root.left!=null){
-
-
+        while (left!=null){//求左子树深度
+            leftDepth++;
+            left  = left.left;
         }
-        return 0;
+        while (right!=null){
+            rightDepth++;
+            right = right.right;
+        }
+        if (rightDepth==leftDepth){
+            return (2 << rightDepth) - 1;
+        }
 
+        //单次递归
+        int leftTreeNum = countTreeNodesByPerfect(root.left);
+        int rightTreeNum = countTreeNodesByPerfect(root.right);
+        int result = leftTreeNum+rightTreeNum+1;
+        return  result;
     }
 
+    /**
+     * 18.判断是否平衡二叉树
+     * 一棵高度平衡二叉树定义为：一个二叉树每个节点的左右两个子树的高度差的绝对值不超过1。
+     * 求高度用后序遍历，
+     * 求深度用前序遍历
+     * 递归方法求解
+     * @param root
+     * @return int 如果左右子树高度差>1，即表示不是平衡二叉树，返回-1，如果是二叉树，返回最大高度。
+     */
+    public int getHight(MyTreeNode root){
+        //终止条件,如果节点为空，返回0
+        if (root==null){
+            return 0;
+        }
+        //单个递归中，左右中的顺序
+        int leftDepth = getHight(root.left);
+        if (leftDepth==-1) return -1;
+        int rightDepth = getHight(root.right);
+        if (rightDepth==-1) return -1;
+        return Math.abs(leftDepth-rightDepth)>1?-1:1+Math.max(leftDepth,rightDepth);
+    }
 
+    /**
+     * 使用迭代方法解决平衡树高度
+     * 使用栈解决递归问题
+     * 后序遍历左右中，放入栈的顺序为中右左。
+     * @param root
+     * @return
+     */
+    public boolean isBalence(MyTreeNode root){
+        if (root==null){
+            return true;
+        }
+        //利用栈执行后序遍历计算高度
+        Stack<MyTreeNode> stack  = new Stack<>();
+        stack.push(root);
+        MyTreeNode pre = null;
+        while (!stack.isEmpty()){
+            MyTreeNode pop = stack.pop();
+            if (Math.abs(getHightByDieDai(pop.left)-getHightByDieDai(pop.right))>1){
+                return false;
+            }
+            if (pop.right!=null){
+                stack.push(pop.right);
+            }
+            if (pop.left!=null){
+                stack.push(pop.left);
+            }
+        }
+        return true;
+    }
+    /**
+     * 层序遍历获取节点的最大深度，也就是当前节点的高度
+     * @param root
+     * @return
+     */
+    public int getHightByDieDai(MyTreeNode root){
+        int result = 0;
+        if (root==null){
+            return result;
+        }
+        Deque<MyTreeNode> deque = new LinkedList<>();
+        deque.offerLast(root);
+        while (!deque.isEmpty()){
+            int size = deque.size();
+            for (int i=0;i<size;i++){
+                MyTreeNode node = deque.pollFirst();
+                if (node.left!=null){
+                    deque.offerLast(node.left);
+                }
+                if (node.right!=null){
+                    deque.offerLast(node.right);
+                }
+            }
+            result++;
+        }
+        return result;
+    }
 
-
-
-
-
-
+    public int getHightByDieDai2(MyTreeNode root){
+        int result = 0;
+        if (root==null){
+            return result;
+        }
+        int leftHeight = root.left != null ? root.left.val : 0;
+        int rightHeight = root.right != null ? root.right.val : 0;
+        result = Math.max(leftHeight, rightHeight) + 1;
+        root.val = result;// 用TreeNode.val来保存当前结点的高度
+        return result;
+    }
 
 }
